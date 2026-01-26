@@ -30,6 +30,8 @@ class GitHubAPI {
 
     if (!this.owner || !this.repo || !this.token) {
       console.warn("GitHub API credentials not fully configured");
+    } else {
+      console.log(`GitHub API configured for: ${this.owner}/${this.repo}`);
     }
   }
 
@@ -49,11 +51,16 @@ class GitHubAPI {
     }
 
     try {
+      // GitHub API expects paths with forward slashes, not URL encoded
       const url = `${this.baseUrl}/repos/${this.owner}/${this.repo}/contents/${path}?ref=${branch}`;
+      
+      console.log(`Getting file SHA: ${path} from ${this.owner}/${this.repo}`);
+      
       const response = await fetch(url, {
         headers: {
-          Authorization: `token ${this.token}`,
+          Authorization: `Bearer ${this.token}`,
           Accept: "application/vnd.github.v3+json",
+          "User-Agent": "vaibhavsrivastava-admin-panel",
         },
       });
 
@@ -62,8 +69,15 @@ class GitHubAPI {
       }
 
       if (!response.ok) {
-        const error = await response.text();
-        throw new Error(`Failed to get file SHA: ${response.status} ${error}`);
+        const errorText = await response.text();
+        let errorMessage = `Failed to get file SHA: ${response.status}`;
+        try {
+          const errorData = JSON.parse(errorText);
+          errorMessage += ` - ${errorData.message || errorText}`;
+        } catch {
+          errorMessage += ` - ${errorText}`;
+        }
+        throw new Error(errorMessage);
       }
 
       const data = await response.json();
@@ -94,7 +108,12 @@ class GitHubAPI {
       // Encode content as base64
       const encodedContent = Buffer.from(content, "utf-8").toString("base64");
 
+      // URL encode the path properly - GitHub API expects forward slashes, not encoded
+      // But we need to encode other special characters
       const url = `${this.baseUrl}/repos/${this.owner}/${this.repo}/contents/${path}`;
+      
+      console.log(`Committing file: ${path} to ${this.owner}/${this.repo} on branch ${branch}`);
+      
       const body: any = {
         message,
         content: encodedContent,
@@ -103,21 +122,48 @@ class GitHubAPI {
 
       if (sha) {
         body.sha = sha; // Required for updates
+        console.log(`Updating existing file (SHA: ${sha.substring(0, 7)}...)`);
+      } else {
+        console.log(`Creating new file`);
       }
 
       const response = await fetch(url, {
         method: "PUT",
         headers: {
-          Authorization: `token ${this.token}`,
+          Authorization: `Bearer ${this.token}`,
           Accept: "application/vnd.github.v3+json",
           "Content-Type": "application/json",
+          "User-Agent": "vaibhavsrivastava-admin-panel",
         },
         body: JSON.stringify(body),
       });
 
       if (!response.ok) {
-        const error = await response.text();
-        throw new Error(`Failed to commit file: ${response.status} ${error}`);
+        const errorText = await response.text();
+        let errorMessage = `Failed to commit file: ${response.status}`;
+        try {
+          const errorData = JSON.parse(errorText);
+          errorMessage += ` - ${errorData.message || errorText}`;
+          
+          // Provide helpful error messages for common issues
+          if (response.status === 404) {
+            errorMessage += `\n\nPossible causes:\n`;
+            errorMessage += `- Repository not found: Check GITHUB_OWNER="${this.owner}" and GITHUB_REPO="${this.repo}" are correct\n`;
+            errorMessage += `- Repository URL should be: https://github.com/${this.owner}/${this.repo}\n`;
+            errorMessage += `- Token doesn't have access: Ensure token has 'repo' scope\n`;
+            errorMessage += `- Branch doesn't exist: Verify branch '${branch}' exists in repository\n`;
+            errorMessage += `- File path issue: Path="${path}"`;
+          } else if (response.status === 401 || response.status === 403) {
+            errorMessage += `\n\nPossible causes:\n`;
+            errorMessage += `- Invalid token: Check GITHUB_TOKEN is correct\n`;
+            errorMessage += `- Token expired: Generate a new token\n`;
+            errorMessage += `- Insufficient permissions: Token needs 'repo' scope`;
+          }
+        } catch {
+          errorMessage += ` - ${errorText}`;
+        }
+        console.error(`GitHub API Error: ${errorMessage}`);
+        throw new Error(errorMessage);
       }
 
       return await response.json();
@@ -145,13 +191,18 @@ class GitHubAPI {
         throw new Error(`File not found: ${path}`);
       }
 
+      // GitHub API expects paths with forward slashes, not URL encoded
       const url = `${this.baseUrl}/repos/${this.owner}/${this.repo}/contents/${path}`;
+      
+      console.log(`Deleting file: ${path} from ${this.owner}/${this.repo}`);
+      
       const response = await fetch(url, {
         method: "DELETE",
         headers: {
-          Authorization: `token ${this.token}`,
+          Authorization: `Bearer ${this.token}`,
           Accept: "application/vnd.github.v3+json",
           "Content-Type": "application/json",
+          "User-Agent": "vaibhavsrivastava-admin-panel",
         },
         body: JSON.stringify({
           message,
@@ -161,8 +212,15 @@ class GitHubAPI {
       });
 
       if (!response.ok) {
-        const error = await response.text();
-        throw new Error(`Failed to delete file: ${response.status} ${error}`);
+        const errorText = await response.text();
+        let errorMessage = `Failed to delete file: ${response.status}`;
+        try {
+          const errorData = JSON.parse(errorText);
+          errorMessage += ` - ${errorData.message || errorText}`;
+        } catch {
+          errorMessage += ` - ${errorText}`;
+        }
+        throw new Error(errorMessage);
       }
 
       return await response.json();
@@ -189,7 +247,7 @@ class GitHubAPI {
       const refUrl = `${this.baseUrl}/repos/${this.owner}/${this.repo}/git/refs/heads/${branch}`;
       const refResponse = await fetch(refUrl, {
         headers: {
-          Authorization: `token ${this.token}`,
+          Authorization: `Bearer ${this.token}`,
           Accept: "application/vnd.github.v3+json",
         },
       });
@@ -205,7 +263,7 @@ class GitHubAPI {
       const treeUrl = `${this.baseUrl}/repos/${this.owner}/${this.repo}/git/trees/${baseTreeSha}?recursive=1`;
       const treeResponse = await fetch(treeUrl, {
         headers: {
-          Authorization: `token ${this.token}`,
+          Authorization: `Bearer ${this.token}`,
           Accept: "application/vnd.github.v3+json",
         },
       });
@@ -236,7 +294,7 @@ class GitHubAPI {
           const blobResponse = await fetch(blobUrl, {
             method: "POST",
             headers: {
-              Authorization: `token ${this.token}`,
+              Authorization: `Bearer ${this.token}`,
               Accept: "application/vnd.github.v3+json",
               "Content-Type": "application/json",
             },
@@ -263,7 +321,7 @@ class GitHubAPI {
       const createTreeResponse = await fetch(createTreeUrl, {
         method: "POST",
         headers: {
-          Authorization: `token ${this.token}`,
+          Authorization: `Bearer ${this.token}`,
           Accept: "application/vnd.github.v3+json",
           "Content-Type": "application/json",
         },
@@ -290,7 +348,7 @@ class GitHubAPI {
       const commitResponse = await fetch(commitUrl, {
         method: "POST",
         headers: {
-          Authorization: `token ${this.token}`,
+          Authorization: `Bearer ${this.token}`,
           Accept: "application/vnd.github.v3+json",
           "Content-Type": "application/json",
         },
@@ -313,7 +371,7 @@ class GitHubAPI {
       const updateRefResponse = await fetch(updateRefUrl, {
         method: "PATCH",
         headers: {
-          Authorization: `token ${this.token}`,
+          Authorization: `Bearer ${this.token}`,
           Accept: "application/vnd.github.v3+json",
           "Content-Type": "application/json",
         },
