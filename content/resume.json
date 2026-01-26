@@ -1,56 +1,92 @@
 {
-  "executiveSummary": "Strategic product leader with extensive experience in driving innovation through AI/ML, market research, and data-driven decision making. Proven track record of building scalable products, leading cross-functional teams, and executing successful go-to-market strategies. Passionate about leveraging technology to solve complex business challenges and create meaningful impact.",
+  "executiveSummary": "Senior Product Manager with 17 years of experience driving AI-powered product innovation and growth across global B2B markets. Skilled in market and competitor analysis, forecasting, and GTM strategy to identify trends, assess penetration, and guide resource allocation. Adept at bridging Market Research, Data Science, Engineering, and Business strategy to deliver customer-centric AI solutions and actionable market insights. Holds an MBA from IIM Lucknow in Marketing & Strategy.",
   "experience": [
     {
-      "company": "Your Current Company",
-      "role": "Senior Product Manager / Strategic Leader",
-      "startDate": "2020-01",
+      "company": "Dell Technologies",
+      "role": "AI Product Manager",
+      "startDate": "2015-03",
       "endDate": "present",
-      "location": "City, Country",
+      "location": "Bengaluru, India",
       "achievements": [
-        "Led product strategy for AI/ML initiatives resulting in 40% improvement in key metrics",
-        "Managed cross-functional teams of 15+ members across engineering, design, and data science",
-        "Executed GTM strategy that increased market penetration by 60%",
-        "Conducted comprehensive market research identifying $50M+ opportunity"
+        "Conducted in-depth market and competitor analysis across APJ, developed revenue forecasts, and provided data-backed recommendations to leadership for GTM strategy and resource allocation",
+        "Directed end-to-end strategy for an AI-powered lead selection engine, deploying predictive account scoring algorithms and Product-Led Growth (PLG) frameworks that boosted qualified lead generation by 20%+ across APJ markets",
+        "Unified Sales, RevOps, and GTM teams through revenue alignment, marketing automation, and campaign orchestration, presenting market insights and forecasts to guide strategy and accelerate pipeline velocity",
+        "Built product feedback loops by integrating real-time performance data with recommendation algorithms, leveraging SQL, Python, and Power BI dashboards to enable continuous model refinement",
+        "Shaped AI-driven marketing strategies grounded in Account-Based Marketing (ABM), tailoring scoring models to APJ buyer behaviours and establishing thought leadership in AI-powered demand generation"
       ],
-      "description": "Strategic leadership role focusing on product innovation, AI/ML integration, and market expansion."
+      "description": "Leading AI product strategy and development, market research, and cross-functional product leadership for AI-powered solutions across APJ markets."
+    },
+    {
+      "company": "Tata Consultancy Services",
+      "role": "Technical Product Consultant",
+      "startDate": "2007-09",
+      "endDate": "2014-03",
+      "location": "India",
+      "achievements": [
+        "Progressed from Java developer to technical product sales leader, building expertise across the enterprise software development lifecycle and shaping client-facing product strategy for Microsoft SharePoint solutions",
+        "Directed solution architecture and technical consulting for SharePoint implementations across mid-market and enterprise clients, translating platform capabilities into tailored product solutions",
+        "Accelerated product adoption through customer engagement programs, product demonstrations, proof-of-concepts, and technical workshops, driving year-over-year platform uptake growth",
+        "Partnered with sales teams on deal strategy and RFP responses, bridging technical product expertise with business stakeholder communication to influence revenue outcomes"
+      ],
+      "description": "Technical product leadership, solution architecture, and product consulting for enterprise software solutions, with focus on Microsoft SharePoint implementations."
     }
   ],
   "skills": {
     "marketResearch": [
       "Market Analysis",
-      "Competitive Intelligence",
-      "User Research",
-      "Data Analytics",
-      "Customer Insights"
+      "Competitor Analysis",
+      "Revenue Forecasting",
+      "Market Penetration Assessment",
+      "Buyer Behavior Analysis",
+      "Data Analytics"
     ],
     "productStrategy": [
+      "AI Product Strategy",
+      "Product-Led Growth (PLG)",
       "Product Roadmapping",
       "Strategic Planning",
       "Product-Market Fit",
-      "Feature Prioritization",
-      "Stakeholder Management"
+      "Account-Based Marketing (ABM)"
     ],
     "aiMl": [
-      "Machine Learning",
-      "AI Strategy",
-      "Data Science",
       "Predictive Analytics",
-      "MLOps"
+      "AI-Powered Solutions",
+      "Machine Learning Models",
+      "Account Scoring Algorithms",
+      "Recommendation Algorithms",
+      "SQL",
+      "Python"
     ],
     "solutionArchitecture": [
+      "Solution Architecture",
+      "Technical Consulting",
+      "Enterprise Software",
       "System Design",
-      "Cloud Architecture",
-      "API Design",
-      "Scalability Planning",
-      "Technical Strategy"
+      "Platform Implementation",
+      "SharePoint Solutions"
     ],
     "gtmExecution": [
       "Go-to-Market Strategy",
-      "Product Launch",
-      "Partnership Development",
+      "Revenue Alignment",
+      "Marketing Automation",
+      "Campaign Orchestration",
       "Sales Enablement",
-      "Marketing Strategy"
+      "Product Adoption",
+      "GTM Enablement"
     ]
-  }
+  },
+  "education": [
+    {
+      "degree": "MBA",
+      "field": "Marketing & Strategy",
+      "institution": "Indian Institute of Management (IIM) Lucknow",
+      "period": "2014-2015"
+    },
+    {
+      "degree": "B.Tech",
+      "field": "Information Technology",
+      "institution": "SASTRA University, Thanjavur",
+      "period": "2003-2007"
+    }
+  ]
 }

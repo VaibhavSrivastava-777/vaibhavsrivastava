@@ -4,6 +4,7 @@ import path from "path";
 import ExecutiveSummary from "@/components/Resume/ExecutiveSummary";
 import Experience from "@/components/Resume/Experience";
 import Skills from "@/components/Resume/Skills";
+import Education from "@/components/Resume/Education";
 import DownloadResume from "@/components/CTAs/DownloadResume";
 
 export const metadata: Metadata = {
@@ -31,6 +32,7 @@ export default function ResumePage() {
         <ExecutiveSummary summary={resumeData.executiveSummary} />
         <Experience experiences={resumeData.experience} />
         <Skills skills={resumeData.skills} />
+        {resumeData.education && <Education education={resumeData.education} />}
 
         <div className="mt-12 text-center print:hidden">
           <DownloadResume />
