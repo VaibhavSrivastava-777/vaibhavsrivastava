@@ -65,15 +65,29 @@ npm run dev
 
 ## Content Management
 
-### Resume Data
+### Admin Panel (Recommended)
+
+Use the web-based admin panel for easy content management:
+
+1. Navigate to `/admin/login`
+2. Enter your admin password
+3. Manage blog posts and portfolio items through user-friendly forms
+
+See [ADMIN_GUIDE.md](ADMIN_GUIDE.md) for detailed instructions.
+
+### Manual File Editing
+
+Alternatively, you can edit files directly:
+
+#### Resume Data
 Edit `content/resume.json` to update resume information.
 
-### Portfolio Projects
+#### Portfolio Projects
 Add or modify projects in `content/portfolio.json`. Each project should include:
 - slug, name, impact, techStack, category, date
 - STAR format case study (situation, task, action, result)
 
-### Blog Posts
+#### Blog Posts
 Create markdown files in `content/blog/` with frontmatter:
 ```markdown
 ---
@@ -84,7 +98,7 @@ excerpt: "Brief excerpt..."
 ---
 ```
 
-### Speaking Engagements
+#### Speaking Engagements
 Update `content/speaking.json` with speaking engagements and testimonials.
 
 ## Deployment
