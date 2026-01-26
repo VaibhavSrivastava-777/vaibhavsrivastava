@@ -17,7 +17,15 @@ The admin panel provides a user-friendly web interface to manage blog posts and 
    ```
    ADMIN_PASSWORD=your-secure-password-here
    ```
-3. For Vercel deployment, add this as an environment variable in your Vercel project settings
+3. **IMPORTANT**: Restart your development server after creating/updating `.env.local`:
+   ```bash
+   # Stop the server (Ctrl+C) and restart:
+   npm run dev
+   ```
+4. For Vercel deployment, add this as an environment variable in your Vercel project settings:
+   - Go to Vercel Dashboard > Your Project > Settings > Environment Variables
+   - Add `ADMIN_PASSWORD` with your password value
+   - Redeploy the project
 
 ## Features
 

@@ -16,22 +16,37 @@ export default function AdminLogin() {
     setIsLoading(true);
 
     try {
+      console.log("Attempting login...");
       const response = await fetch("/api/admin/auth", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ action: "login", password }),
       });
 
+      console.log("Response status:", response.status);
+      
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({ error: "Network error" }));
+        console.error("Error response:", errorData);
+        setError(errorData.error || `Server error: ${response.status}`);
+        setIsLoading(false);
+        return;
+      }
+
       const data = await response.json();
+      console.log("Response data:", data);
 
       if (data.success) {
-        router.push("/admin/blog");
+        console.log("Login successful, redirecting...");
+        // Redirect immediately
+        window.location.href = "/admin/blog";
       } else {
         setError(data.error || "Invalid password");
+        setIsLoading(false);
       }
-    } catch (error) {
-      setError("An error occurred. Please try again.");
-    } finally {
+    } catch (error: any) {
+      console.error("Login error:", error);
+      setError(error.message || "An error occurred. Please check browser console for details.");
       setIsLoading(false);
     }
   };
