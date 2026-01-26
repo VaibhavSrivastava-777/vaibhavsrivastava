@@ -10,38 +10,26 @@ export default function ContactPage() {
     subject: "",
     message: "",
   });
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitStatus, setSubmitStatus] = useState<"idle" | "success" | "error">("idle");
+  const [submitStatus, setSubmitStatus] = useState<"idle" | "success">("idle");
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setIsSubmitting(true);
-    setSubmitStatus("idle");
-
-    try {
-      const response = await fetch("/api/contact", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        setSubmitStatus("success");
-        setFormData({ name: "", email: "", subject: "", message: "" });
-      } else {
-        setSubmitStatus("error");
-        console.error("Form submission error:", data.error);
-      }
-    } catch (error) {
-      console.error("Error submitting form:", error);
-      setSubmitStatus("error");
-    } finally {
-      setIsSubmitting(false);
-    }
+    
+    // Construct mailto URL with pre-filled email
+    const recipientEmail = "vaibhav.srivastava@iiml.org";
+    const subject = encodeURIComponent(formData.subject);
+    const body = encodeURIComponent(
+      `Hello,\n\n${formData.message}\n\nBest regards,\n${formData.name}\n${formData.email}`
+    );
+    
+    const mailtoLink = `mailto:${recipientEmail}?subject=${subject}&body=${body}`;
+    
+    // Open email client
+    window.location.href = mailtoLink;
+    
+    // Show success message
+    setSubmitStatus("success");
+    setFormData({ name: "", email: "", subject: "", message: "" });
   };
 
   const handleChange = (
@@ -184,14 +172,8 @@ export default function ContactPage() {
 
               {submitStatus === "success" && (
                 <div className="p-4 bg-green-50 border border-green-200 rounded-lg text-green-700">
-                  Thank you! Your message has been sent. I'll get back to you soon.
-                </div>
-              )}
-
-              {submitStatus === "error" && (
-                <div className="p-4 bg-red-50 border border-red-200 rounded-lg text-red-700">
-                  Something went wrong. Please try again or email directly at{" "}
-                  <a href="mailto:vaibhav.srivastava@iiml.org" className="underline">
+                  Your email client should open with the message pre-filled. If it doesn't, please email directly at{" "}
+                  <a href="mailto:vaibhav.srivastava@iiml.org" className="underline font-medium">
                     vaibhav.srivastava@iiml.org
                   </a>
                   .
@@ -200,18 +182,15 @@ export default function ContactPage() {
 
               <button
                 type="submit"
-                disabled={isSubmitting}
-                className="btn-primary w-full inline-flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="btn-primary w-full inline-flex items-center justify-center gap-2"
               >
-                {isSubmitting ? (
-                  "Sending..."
-                ) : (
-                  <>
-                    <Send size={20} />
-                    Send Message
-                  </>
-                )}
+                <Send size={20} />
+                Send Message
               </button>
+              
+              <p className="text-sm text-gray-500 text-center">
+                Clicking "Send Message" will open your default email client (Gmail, Outlook, etc.) with the message pre-filled.
+              </p>
             </form>
           </div>
         </div>
