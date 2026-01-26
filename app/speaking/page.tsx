@@ -2,7 +2,7 @@ import { Metadata } from "next";
 import fs from "fs";
 import path from "path";
 import { formatDate } from "@/lib/client-utils";
-import { Calendar, MapPin, ExternalLink, MessageCircle } from "lucide-react";
+import { MessageCircle } from "lucide-react";
 import Link from "next/link";
 
 export const metadata: Metadata = {
@@ -18,75 +18,12 @@ function getSpeakingData() {
 
 export default function SpeakingPage() {
   const data = getSpeakingData();
-  const { engagements, mentoring } = data;
+  const { mentoring } = data;
 
   return (
     <div className="section-container">
       <div className="max-w-7xl mx-auto">
         <h1 className="text-4xl font-bold mb-12 text-gray-900">Speaking & Mentoring</h1>
-
-        {/* Speaking Engagements */}
-        <section className="mb-16">
-          <h2 className="text-3xl font-bold mb-8 text-gray-900">Speaking Engagements</h2>
-          {engagements.length === 0 ? (
-            <p className="text-gray-600">No speaking engagements listed yet.</p>
-          ) : (
-            <div className="space-y-6">
-              {engagements.map((engagement: any, index: number) => (
-                <div key={index} className="card">
-                  <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-4">
-                    <div className="flex-1">
-                      <h3 className="text-xl font-semibold mb-2 text-gray-900">
-                        {engagement.event}
-                      </h3>
-                      <p className="text-lg text-gray-700 mb-3">{engagement.topic}</p>
-                      {engagement.description && (
-                        <p className="text-gray-600 mb-4">{engagement.description}</p>
-                      )}
-                      <div className="flex flex-wrap gap-4 text-sm text-gray-500">
-                        <div className="flex items-center gap-1">
-                          <Calendar size={16} />
-                          {formatDate(engagement.date)}
-                        </div>
-                        <div className="flex items-center gap-1">
-                          <MapPin size={16} />
-                          {engagement.location}
-                        </div>
-                        <span className="px-2 py-1 bg-gray-100 text-gray-700 rounded text-xs">
-                          {engagement.type}
-                        </span>
-                      </div>
-                    </div>
-                    <div className="flex gap-2">
-                      {engagement.videoUrl && (
-                        <a
-                          href={engagement.videoUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="btn-outline text-sm inline-flex items-center gap-2"
-                        >
-                          <ExternalLink size={16} />
-                          Watch
-                        </a>
-                      )}
-                      {engagement.slidesUrl && (
-                        <a
-                          href={engagement.slidesUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="btn-outline text-sm inline-flex items-center gap-2"
-                        >
-                          <ExternalLink size={16} />
-                          Slides
-                        </a>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </section>
 
         {/* Mentoring Section */}
         <section className="mb-16">

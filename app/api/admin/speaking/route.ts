@@ -31,7 +31,7 @@ export async function PUT(request: NextRequest) {
     const body = await request.json();
     
     const speakingData = {
-      engagements: body.engagements || [],
+      engagements: [], // Keep empty array for backward compatibility
       mentoring: body.mentoring || {
         areas: [],
         testimonials: [],

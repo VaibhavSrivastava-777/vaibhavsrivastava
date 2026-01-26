@@ -5,7 +5,6 @@ import FormField from "@/components/admin/FormField";
 
 export default function SpeakingEditPage() {
   const [formData, setFormData] = useState({
-    engagements: [] as any[],
     mentoring: {
       areas: [] as string[],
       testimonials: [] as any[],
@@ -13,7 +12,6 @@ export default function SpeakingEditPage() {
   });
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [editingEngIndex, setEditingEngIndex] = useState<number | null>(null);
   const [editingTestIndex, setEditingTestIndex] = useState<number | null>(null);
 
   useEffect(() => {
@@ -26,7 +24,6 @@ export default function SpeakingEditPage() {
       if (response.ok) {
         const data = await response.json();
         setFormData({
-          engagements: data.engagements || [],
           mentoring: data.mentoring || {
             areas: [],
             testimonials: [],
@@ -48,7 +45,10 @@ export default function SpeakingEditPage() {
       const response = await fetch("/api/admin/speaking", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          engagements: [], // Keep empty array for backward compatibility
+          mentoring: formData.mentoring,
+        }),
       });
 
       const data = await response.json();
@@ -73,39 +73,6 @@ export default function SpeakingEditPage() {
       alert("An error occurred");
     } finally {
       setIsSubmitting(false);
-    }
-  };
-
-  const addEngagement = () => {
-    setFormData({
-      ...formData,
-      engagements: [
-        ...formData.engagements,
-        {
-          event: "",
-          date: "",
-          location: "",
-          topic: "",
-          type: "Conference",
-          videoUrl: "",
-          slidesUrl: "",
-          description: "",
-        },
-      ],
-    });
-    setEditingEngIndex(formData.engagements.length);
-  };
-
-  const updateEngagement = (index: number, field: string, value: string) => {
-    const updated = [...formData.engagements];
-    updated[index] = { ...updated[index], [field]: value };
-    setFormData({ ...formData, engagements: updated });
-  };
-
-  const removeEngagement = (index: number) => {
-    if (confirm("Remove this engagement?")) {
-      const updated = formData.engagements.filter((_, i) => i !== index);
-      setFormData({ ...formData, engagements: updated });
     }
   };
 
@@ -173,105 +140,7 @@ export default function SpeakingEditPage() {
       <h1 className="text-3xl font-bold text-gray-900 mb-8">Edit Speaking & Mentoring</h1>
 
       <form onSubmit={handleSubmit} className="space-y-8 bg-white p-6 rounded-lg border border-gray-200">
-        <div className="border-b border-gray-200 pb-6">
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-2xl font-semibold text-gray-900">Speaking Engagements</h2>
-            <button
-              type="button"
-              onClick={addEngagement}
-              className="btn-outline text-sm"
-            >
-              + Add Engagement
-            </button>
-          </div>
-
-          <div className="space-y-6">
-            {formData.engagements.map((eng, index) => (
-              <div key={index} className="border border-gray-200 rounded-lg p-4">
-                <div className="flex justify-between items-start mb-4">
-                  <h3 className="font-semibold text-gray-900">Engagement #{index + 1}</h3>
-                  <button
-                    type="button"
-                    onClick={() => removeEngagement(index)}
-                    className="text-red-600 hover:text-red-700 text-sm"
-                  >
-                    Remove
-                  </button>
-                </div>
-
-                <div className="space-y-4">
-                  <FormField
-                    label="Event Name"
-                    name={`eng-${index}-event`}
-                    value={eng.event}
-                    onChange={(value) => updateEngagement(index, "event", value)}
-                  />
-                  <div className="grid grid-cols-2 gap-4">
-                    <FormField
-                      label="Date (YYYY-MM-DD)"
-                      name={`eng-${index}-date`}
-                      type="date"
-                      value={eng.date}
-                      onChange={(value) => updateEngagement(index, "date", value)}
-                    />
-                    <FormField
-                      label="Type"
-                      name={`eng-${index}-type`}
-                      type="select"
-                      value={eng.type}
-                      onChange={(value) => updateEngagement(index, "type", value)}
-                      options={[
-                        { value: "Conference", label: "Conference" },
-                        { value: "Webinar", label: "Webinar" },
-                        { value: "Workshop", label: "Workshop" },
-                        { value: "Podcast", label: "Podcast" },
-                        { value: "Other", label: "Other" },
-                      ]}
-                    />
-                  </div>
-                  <FormField
-                    label="Location"
-                    name={`eng-${index}-location`}
-                    value={eng.location}
-                    onChange={(value) => updateEngagement(index, "location", value)}
-                  />
-                  <FormField
-                    label="Topic"
-                    name={`eng-${index}-topic`}
-                    value={eng.topic}
-                    onChange={(value) => updateEngagement(index, "topic", value)}
-                  />
-                  <FormField
-                    label="Description"
-                    name={`eng-${index}-description`}
-                    type="textarea"
-                    value={eng.description}
-                    onChange={(value) => updateEngagement(index, "description", value)}
-                    rows={2}
-                  />
-                  <div className="grid grid-cols-2 gap-4">
-                    <FormField
-                      label="Video URL (optional)"
-                      name={`eng-${index}-videoUrl`}
-                      type="url"
-                      value={eng.videoUrl}
-                      onChange={(value) => updateEngagement(index, "videoUrl", value)}
-                    />
-                    <FormField
-                      label="Slides URL (optional)"
-                      name={`eng-${index}-slidesUrl`}
-                      type="url"
-                      value={eng.slidesUrl}
-                      onChange={(value) => updateEngagement(index, "slidesUrl", value)}
-                    />
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div className="border-t border-gray-200 pt-6">
+        <div>
           <h2 className="text-2xl font-semibold text-gray-900 mb-4">Mentoring</h2>
           
           <div className="mb-6">
