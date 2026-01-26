@@ -2,7 +2,7 @@
 
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
-import { FileText, Briefcase, LogOut } from "lucide-react";
+import { FileText, Briefcase, LogOut, FileCheck, Mic } from "lucide-react";
 import { useState, useEffect } from "react";
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -31,6 +31,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const navItems = [
     { name: "Blog Posts", href: "/admin/blog", icon: FileText },
     { name: "Portfolio", href: "/admin/portfolio", icon: Briefcase },
+    { name: "Resume", href: "/admin/resume", icon: FileCheck },
+    { name: "Speaking", href: "/admin/speaking", icon: Mic },
   ];
 
   return (
