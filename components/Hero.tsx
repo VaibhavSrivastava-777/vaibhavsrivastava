@@ -6,7 +6,7 @@ export default function Hero() {
     <section className="section-container">
       <div className="max-w-4xl mx-auto text-center">
         <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-6">
-          Strategic Thought Leader
+          Building Products That Matter
         </h1>
         <p className="text-xl md:text-2xl text-gray-600 mb-4">
           Product Strategy | AI/ML Innovation | Growth Leadership
