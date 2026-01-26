@@ -34,7 +34,15 @@ export default function NewBlogPost() {
       if (response.ok) {
         router.push("/admin/blog");
       } else {
-        if (data.errors) {
+        if (data.readOnly) {
+          alert("⚠️ Production Limitation:\n\n" + 
+            "File system is read-only in production (Vercel).\n\n" +
+            "Options:\n" +
+            "1. Test changes locally using 'npm run dev'\n" +
+            "2. Update files manually via git and push to deploy\n" +
+            "3. Contact admin to implement database storage\n\n" +
+            "Error: " + data.error);
+        } else if (data.errors) {
           const errorMap: Record<string, string> = {};
           data.errors.forEach((err: string) => {
             if (err.includes("Title")) errorMap.title = err;

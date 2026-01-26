@@ -49,7 +49,18 @@ export default function PortfolioListPage() {
       if (response.ok) {
         setProjects(projects.filter((p) => p.slug !== slug));
       } else {
-        alert("Failed to delete project");
+        const data = await response.json();
+        if (data.readOnly) {
+          alert("⚠️ Production Limitation:\n\n" + 
+            "File system is read-only in production (Vercel).\n\n" +
+            "Options:\n" +
+            "1. Test changes locally using 'npm run dev'\n" +
+            "2. Update files manually via git and push to deploy\n" +
+            "3. Contact admin to implement database storage\n\n" +
+            "Error: " + data.error);
+        } else {
+          alert(data.error || "Failed to delete project");
+        }
       }
     } catch (error) {
       console.error("Error deleting project:", error);

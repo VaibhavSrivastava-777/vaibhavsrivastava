@@ -40,6 +40,14 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
+    // Check if we're in a read-only environment (Vercel production)
+    if (process.env.VERCEL === "1" || process.env.NODE_ENV === "production") {
+      return NextResponse.json({ 
+        error: "File system is read-only in production. Please update files via git and redeploy, or use the development server for testing.",
+        readOnly: true
+      }, { status: 503 });
+    }
+
     const body = await request.json();
     const slug = body.slug || generateSlug(body.name);
 
@@ -70,10 +78,20 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ errors: validation.errors }, { status: 400 });
     }
 
-    savePortfolioItem(item);
-
-    return NextResponse.json({ success: true, slug });
+    try {
+      savePortfolioItem(item);
+      return NextResponse.json({ success: true, slug });
+    } catch (error: any) {
+      if (error.message.includes("EROFS") || error.message.includes("read-only")) {
+        return NextResponse.json({ 
+          error: "File system is read-only. This feature works in development mode. For production, please update files via git and redeploy.",
+          readOnly: true
+        }, { status: 503 });
+      }
+      throw error;
+    }
   } catch (error: any) {
+    console.error("Portfolio create error:", error);
     return NextResponse.json({ error: error.message || "Server error" }, { status: 500 });
   }
 }
@@ -85,6 +103,14 @@ export async function PUT(request: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
+    // Check if we're in a read-only environment (Vercel production)
+    if (process.env.VERCEL === "1" || process.env.NODE_ENV === "production") {
+      return NextResponse.json({ 
+        error: "File system is read-only in production. Please update files via git and redeploy, or use the development server for testing.",
+        readOnly: true
+      }, { status: 503 });
+    }
+
     const body = await request.json();
     const { slug } = body;
 
@@ -92,6 +118,8 @@ export async function PUT(request: NextRequest) {
       return NextResponse.json({ error: "Slug is required" }, { status: 400 });
     }
 
+    // Handle both new format (star.content) and old format (separate fields)
+    const starContent = body.star?.content || "";
     const item = {
       slug,
       name: body.name,
@@ -101,12 +129,15 @@ export async function PUT(request: NextRequest) {
       category: body.category,
       date: body.date,
       description: body.description,
-      star: {
-        situation: body.star.situation,
-        task: body.star.task,
-        action: body.star.action,
-        result: body.star.result,
-      },
+      star: starContent 
+        ? { content: starContent, situation: "", task: "", action: "", result: "" }
+        : {
+            situation: body.star?.situation || "",
+            task: body.star?.task || "",
+            action: body.star?.action || "",
+            result: body.star?.result || "",
+            content: "",
+          },
     };
 
     const validation = validatePortfolioItem(item);
@@ -114,10 +145,20 @@ export async function PUT(request: NextRequest) {
       return NextResponse.json({ errors: validation.errors }, { status: 400 });
     }
 
-    savePortfolioItem(item);
-
-    return NextResponse.json({ success: true, slug });
+    try {
+      savePortfolioItem(item);
+      return NextResponse.json({ success: true, slug });
+    } catch (error: any) {
+      if (error.message.includes("EROFS") || error.message.includes("read-only")) {
+        return NextResponse.json({ 
+          error: "File system is read-only. This feature works in development mode. For production, please update files via git and redeploy.",
+          readOnly: true
+        }, { status: 503 });
+      }
+      throw error;
+    }
   } catch (error: any) {
+    console.error("Portfolio update error:", error);
     return NextResponse.json({ error: error.message || "Server error" }, { status: 500 });
   }
 }
@@ -129,6 +170,14 @@ export async function DELETE(request: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
+    // Check if we're in a read-only environment (Vercel production)
+    if (process.env.VERCEL === "1" || process.env.NODE_ENV === "production") {
+      return NextResponse.json({ 
+        error: "File system is read-only in production. Please update files via git and redeploy, or use the development server for testing.",
+        readOnly: true
+      }, { status: 503 });
+    }
+
     const { searchParams } = new URL(request.url);
     const slug = searchParams.get("slug");
 
@@ -136,10 +185,20 @@ export async function DELETE(request: NextRequest) {
       return NextResponse.json({ error: "Slug is required" }, { status: 400 });
     }
 
-    deletePortfolioItem(slug);
-
-    return NextResponse.json({ success: true });
+    try {
+      deletePortfolioItem(slug);
+      return NextResponse.json({ success: true });
+    } catch (error: any) {
+      if (error.message.includes("EROFS") || error.message.includes("read-only")) {
+        return NextResponse.json({ 
+          error: "File system is read-only. This feature works in development mode. For production, please update files via git and redeploy.",
+          readOnly: true
+        }, { status: 503 });
+      }
+      throw error;
+    }
   } catch (error: any) {
+    console.error("Portfolio delete error:", error);
     return NextResponse.json({ error: error.message || "Server error" }, { status: 500 });
   }
 }

@@ -140,7 +140,19 @@ export function savePortfolioItem(item: any): void {
 }
 
 export function deletePortfolioItem(slug: string): void {
+  if (process.env.VERCEL === "1") {
+    throw new Error("EROFS: File system is read-only in Vercel production. Please update files via git and redeploy.");
+  }
+
   const data = getPortfolioData();
   data.projects = data.projects.filter((p: any) => p.slug !== slug);
-  savePortfolioData(data);
+  
+  try {
+    savePortfolioData(data);
+  } catch (error: any) {
+    if (error.code === "EROFS" || error.message.includes("read-only")) {
+      throw new Error("EROFS: File system is read-only. Please update files via git and redeploy.");
+    }
+    throw error;
+  }
 }
