@@ -22,9 +22,10 @@ The admin panel provides a user-friendly web interface to manage blog posts and 
    # Stop the server (Ctrl+C) and restart:
    npm run dev
    ```
-4. For Vercel deployment, add this as an environment variable in your Vercel project settings:
+4. For Vercel deployment, add environment variables in your Vercel project settings:
    - Go to Vercel Dashboard > Your Project > Settings > Environment Variables
    - Add `ADMIN_PASSWORD` with your password value
+   - Add `GITHUB_OWNER`, `GITHUB_REPO`, and `GITHUB_TOKEN` (see [GITHUB_API_SETUP.md](GITHUB_API_SETUP.md) for details)
    - Redeploy the project
 
 ## Features
@@ -82,9 +83,9 @@ The admin panel provides a user-friendly web interface to manage blog posts and 
 - Check browser console for errors
 
 **Changes not appearing?**
-- Changes are saved to files immediately
-- For Vercel: Push changes to GitHub to trigger deployment
-- For local: Restart dev server if needed
+- **Development**: Changes are saved to files immediately
+- **Production**: Changes are committed to GitHub via API, then Vercel auto-deploys (takes 1-2 minutes)
+- If GitHub API is not configured, you'll see a helpful error message with setup instructions
 
 **Build errors?**
 - Ensure all required fields are filled

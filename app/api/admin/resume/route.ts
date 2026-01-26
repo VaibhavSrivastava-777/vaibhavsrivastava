@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { checkAuth } from "@/lib/admin/auth";
+import { saveResumeData } from "@/lib/admin/file-operations";
 import fs from "fs";
 import path from "path";
 
@@ -27,17 +28,6 @@ export async function PUT(request: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    // Check if we're in a read-only environment (Vercel production)
-    if (process.env.VERCEL === "1" || process.env.NODE_ENV === "production") {
-      // In production, we can't write to the file system
-      // Return the data so user can manually update or we could implement GitHub API
-      return NextResponse.json({ 
-        error: "File system is read-only in production. Please update files via git and redeploy, or use the development server for testing.",
-        readOnly: true,
-        data: request.json ? await request.json() : null
-      }, { status: 503 });
-    }
-
     const body = await request.json();
     
     // Validate required fields
@@ -61,16 +51,17 @@ export async function PUT(request: NextRequest) {
     };
 
     try {
-      fs.writeFileSync(RESUME_FILE, JSON.stringify(resumeData, null, 2), "utf-8");
+      await saveResumeData(resumeData);
       return NextResponse.json({ success: true });
-    } catch (writeError: any) {
-      if (writeError.code === "EROFS" || writeError.message.includes("read-only")) {
+    } catch (error: any) {
+      console.error("Resume update error:", error);
+      if (error.message.includes("GitHub API not configured")) {
         return NextResponse.json({ 
-          error: "File system is read-only. This feature works in development mode. For production, please update files via git and redeploy.",
+          error: "GitHub API not configured. Please set GITHUB_OWNER, GITHUB_REPO, and GITHUB_TOKEN environment variables.",
           readOnly: true
         }, { status: 503 });
       }
-      throw writeError;
+      return NextResponse.json({ error: error.message || "Server error" }, { status: 500 });
     }
   } catch (error: any) {
     console.error("Resume update error:", error);

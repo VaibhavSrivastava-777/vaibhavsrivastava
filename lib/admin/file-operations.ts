@@ -2,10 +2,18 @@ import fs from "fs";
 import path from "path";
 import matter from "gray-matter";
 import { sanitizePath, validateSlug } from "./validation";
+import { githubAPI } from "./github-api";
 
 const CONTENT_DIR = path.join(process.cwd(), "content");
 const BLOG_DIR = path.join(CONTENT_DIR, "blog");
 const PORTFOLIO_FILE = path.join(CONTENT_DIR, "portfolio.json");
+const RESUME_FILE = path.join(CONTENT_DIR, "resume.json");
+const SPEAKING_FILE = path.join(CONTENT_DIR, "speaking.json");
+
+// Helper to determine if we should use GitHub API
+function shouldUseGitHub(): boolean {
+  return (process.env.VERCEL === "1" || process.env.NODE_ENV === "production") && githubAPI.isConfigured();
+}
 
 // Blog operations
 export function getAllBlogFiles(): string[] {
@@ -32,29 +40,12 @@ export function getBlogPostContent(slug: string): { data: any; content: string }
   return { data, content };
 }
 
-export function saveBlogPost(slug: string, frontmatter: any, content: string): void {
+export async function saveBlogPost(slug: string, frontmatter: any, content: string): Promise<void> {
   const safeSlug = sanitizePath(slug);
   if (!validateSlug(safeSlug)) {
     throw new Error("Invalid slug");
   }
 
-  // Check for read-only filesystem
-  if (process.env.VERCEL === "1") {
-    throw new Error("EROFS: File system is read-only in Vercel production. Please update files via git and redeploy.");
-  }
-
-  if (!fs.existsSync(BLOG_DIR)) {
-    try {
-      fs.mkdirSync(BLOG_DIR, { recursive: true });
-    } catch (error: any) {
-      if (error.code === "EROFS") {
-        throw new Error("EROFS: File system is read-only. Please update files via git and redeploy.");
-      }
-      throw error;
-    }
-  }
-
-  const filePath = path.join(BLOG_DIR, `${safeSlug}.md`);
   const frontmatterString = Object.entries(frontmatter)
     .map(([key, value]) => {
       const escapedValue = typeof value === "string" ? `"${value.replace(/"/g, '\\"')}"` : value;
@@ -63,36 +54,52 @@ export function saveBlogPost(slug: string, frontmatter: any, content: string): v
     .join("\n");
 
   const fileContent = `---\n${frontmatterString}\n---\n\n${content}`;
-  
-  try {
-    fs.writeFileSync(filePath, fileContent, "utf-8");
-  } catch (error: any) {
-    if (error.code === "EROFS" || error.message.includes("read-only")) {
-      throw new Error("EROFS: File system is read-only. Please update files via git and redeploy.");
+  const filePath = `content/blog/${safeSlug}.md`;
+  const commitMessage = `Update blog post: ${frontmatter.title || safeSlug}`;
+
+  // Use GitHub API in production, file system in development
+  if (shouldUseGitHub()) {
+    await githubAPI.commitFile(filePath, fileContent, commitMessage);
+  } else {
+    if (!fs.existsSync(BLOG_DIR)) {
+      fs.mkdirSync(BLOG_DIR, { recursive: true });
     }
-    throw error;
+
+    const fullPath = path.join(BLOG_DIR, `${safeSlug}.md`);
+    try {
+      fs.writeFileSync(fullPath, fileContent, "utf-8");
+    } catch (error: any) {
+      if (error.code === "EROFS" || error.message.includes("read-only")) {
+        throw new Error("EROFS: File system is read-only. Please configure GitHub API for production.");
+      }
+      throw error;
+    }
   }
 }
 
-export function deleteBlogPost(slug: string): void {
+export async function deleteBlogPost(slug: string): Promise<void> {
   const safeSlug = sanitizePath(slug);
   if (!validateSlug(safeSlug)) {
     throw new Error("Invalid slug");
   }
 
-  if (process.env.VERCEL === "1") {
-    throw new Error("EROFS: File system is read-only in Vercel production. Please update files via git and redeploy.");
-  }
+  const filePath = `content/blog/${safeSlug}.md`;
+  const commitMessage = `Delete blog post: ${safeSlug}`;
 
-  const filePath = path.join(BLOG_DIR, `${safeSlug}.md`);
-  if (fs.existsSync(filePath)) {
-    try {
-      fs.unlinkSync(filePath);
-    } catch (error: any) {
-      if (error.code === "EROFS" || error.message.includes("read-only")) {
-        throw new Error("EROFS: File system is read-only. Please update files via git and redeploy.");
+  // Use GitHub API in production, file system in development
+  if (shouldUseGitHub()) {
+    await githubAPI.deleteFile(filePath, commitMessage);
+  } else {
+    const fullPath = path.join(BLOG_DIR, `${safeSlug}.md`);
+    if (fs.existsSync(fullPath)) {
+      try {
+        fs.unlinkSync(fullPath);
+      } catch (error: any) {
+        if (error.code === "EROFS" || error.message.includes("read-only")) {
+          throw new Error("EROFS: File system is read-only. Please configure GitHub API for production.");
+        }
+        throw error;
       }
-      throw error;
     }
   }
 }
@@ -106,18 +113,23 @@ export function getPortfolioData(): { projects: any[] } {
   return JSON.parse(fileContent);
 }
 
-export function savePortfolioData(data: { projects: any[] }): void {
-  if (process.env.VERCEL === "1") {
-    throw new Error("EROFS: File system is read-only in Vercel production. Please update files via git and redeploy.");
-  }
+export async function savePortfolioData(data: { projects: any[] }): Promise<void> {
+  const fileContent = JSON.stringify(data, null, 2);
+  const filePath = "content/portfolio.json";
+  const commitMessage = "Update portfolio data";
 
-  try {
-    fs.writeFileSync(PORTFOLIO_FILE, JSON.stringify(data, null, 2), "utf-8");
-  } catch (error: any) {
-    if (error.code === "EROFS" || error.message.includes("read-only")) {
-      throw new Error("EROFS: File system is read-only. Please update files via git and redeploy.");
+  // Use GitHub API in production, file system in development
+  if (shouldUseGitHub()) {
+    await githubAPI.commitFile(filePath, fileContent, commitMessage);
+  } else {
+    try {
+      fs.writeFileSync(PORTFOLIO_FILE, fileContent, "utf-8");
+    } catch (error: any) {
+      if (error.code === "EROFS" || error.message.includes("read-only")) {
+        throw new Error("EROFS: File system is read-only. Please configure GitHub API for production.");
+      }
+      throw error;
     }
-    throw error;
   }
 }
 
@@ -126,7 +138,7 @@ export function getPortfolioItem(slug: string): any | null {
   return data.projects.find((p: any) => p.slug === slug) || null;
 }
 
-export function savePortfolioItem(item: any): void {
+export async function savePortfolioItem(item: any): Promise<void> {
   const data = getPortfolioData();
   const index = data.projects.findIndex((p: any) => p.slug === item.slug);
   
@@ -136,23 +148,53 @@ export function savePortfolioItem(item: any): void {
     data.projects.push(item);
   }
   
-  savePortfolioData(data);
+  await savePortfolioData(data);
 }
 
-export function deletePortfolioItem(slug: string): void {
-  if (process.env.VERCEL === "1") {
-    throw new Error("EROFS: File system is read-only in Vercel production. Please update files via git and redeploy.");
-  }
-
+export async function deletePortfolioItem(slug: string): Promise<void> {
   const data = getPortfolioData();
   data.projects = data.projects.filter((p: any) => p.slug !== slug);
-  
-  try {
-    savePortfolioData(data);
-  } catch (error: any) {
-    if (error.code === "EROFS" || error.message.includes("read-only")) {
-      throw new Error("EROFS: File system is read-only. Please update files via git and redeploy.");
+  await savePortfolioData(data);
+}
+
+// Resume operations
+export async function saveResumeData(data: any): Promise<void> {
+  const fileContent = JSON.stringify(data, null, 2);
+  const filePath = "content/resume.json";
+  const commitMessage = "Update resume data";
+
+  // Use GitHub API in production, file system in development
+  if (shouldUseGitHub()) {
+    await githubAPI.commitFile(filePath, fileContent, commitMessage);
+  } else {
+    try {
+      fs.writeFileSync(RESUME_FILE, fileContent, "utf-8");
+    } catch (error: any) {
+      if (error.code === "EROFS" || error.message.includes("read-only")) {
+        throw new Error("EROFS: File system is read-only. Please configure GitHub API for production.");
+      }
+      throw error;
     }
-    throw error;
+  }
+}
+
+// Speaking operations
+export async function saveSpeakingData(data: any): Promise<void> {
+  const fileContent = JSON.stringify(data, null, 2);
+  const filePath = "content/speaking.json";
+  const commitMessage = "Update speaking and mentoring data";
+
+  // Use GitHub API in production, file system in development
+  if (shouldUseGitHub()) {
+    await githubAPI.commitFile(filePath, fileContent, commitMessage);
+  } else {
+    try {
+      fs.writeFileSync(SPEAKING_FILE, fileContent, "utf-8");
+    } catch (error: any) {
+      if (error.code === "EROFS" || error.message.includes("read-only")) {
+        throw new Error("EROFS: File system is read-only. Please configure GitHub API for production.");
+      }
+      throw error;
+    }
   }
 }
