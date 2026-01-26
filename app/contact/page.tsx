@@ -18,13 +18,30 @@ export default function ContactPage() {
     setIsSubmitting(true);
     setSubmitStatus("idle");
 
-    // In a real implementation, you would send this to an API endpoint
-    // For now, we'll just show a success message
-    setTimeout(() => {
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setSubmitStatus("success");
+        setFormData({ name: "", email: "", subject: "", message: "" });
+      } else {
+        setSubmitStatus("error");
+        console.error("Form submission error:", data.error);
+      }
+    } catch (error) {
+      console.error("Error submitting form:", error);
+      setSubmitStatus("error");
+    } finally {
       setIsSubmitting(false);
-      setSubmitStatus("success");
-      setFormData({ name: "", email: "", subject: "", message: "" });
-    }, 1000);
+    }
   };
 
   const handleChange = (
@@ -173,7 +190,11 @@ export default function ContactPage() {
 
               {submitStatus === "error" && (
                 <div className="p-4 bg-red-50 border border-red-200 rounded-lg text-red-700">
-                  Something went wrong. Please try again or email directly.
+                  Something went wrong. Please try again or email directly at{" "}
+                  <a href="mailto:vaibhav.srivastava@iiml.org" className="underline">
+                    vaibhav.srivastava@iiml.org
+                  </a>
+                  .
                 </div>
               )}
 
