@@ -38,8 +38,20 @@ export function saveBlogPost(slug: string, frontmatter: any, content: string): v
     throw new Error("Invalid slug");
   }
 
+  // Check for read-only filesystem
+  if (process.env.VERCEL === "1") {
+    throw new Error("EROFS: File system is read-only in Vercel production. Please update files via git and redeploy.");
+  }
+
   if (!fs.existsSync(BLOG_DIR)) {
-    fs.mkdirSync(BLOG_DIR, { recursive: true });
+    try {
+      fs.mkdirSync(BLOG_DIR, { recursive: true });
+    } catch (error: any) {
+      if (error.code === "EROFS") {
+        throw new Error("EROFS: File system is read-only. Please update files via git and redeploy.");
+      }
+      throw error;
+    }
   }
 
   const filePath = path.join(BLOG_DIR, `${safeSlug}.md`);
@@ -51,7 +63,15 @@ export function saveBlogPost(slug: string, frontmatter: any, content: string): v
     .join("\n");
 
   const fileContent = `---\n${frontmatterString}\n---\n\n${content}`;
-  fs.writeFileSync(filePath, fileContent, "utf-8");
+  
+  try {
+    fs.writeFileSync(filePath, fileContent, "utf-8");
+  } catch (error: any) {
+    if (error.code === "EROFS" || error.message.includes("read-only")) {
+      throw new Error("EROFS: File system is read-only. Please update files via git and redeploy.");
+    }
+    throw error;
+  }
 }
 
 export function deleteBlogPost(slug: string): void {
@@ -60,9 +80,20 @@ export function deleteBlogPost(slug: string): void {
     throw new Error("Invalid slug");
   }
 
+  if (process.env.VERCEL === "1") {
+    throw new Error("EROFS: File system is read-only in Vercel production. Please update files via git and redeploy.");
+  }
+
   const filePath = path.join(BLOG_DIR, `${safeSlug}.md`);
   if (fs.existsSync(filePath)) {
-    fs.unlinkSync(filePath);
+    try {
+      fs.unlinkSync(filePath);
+    } catch (error: any) {
+      if (error.code === "EROFS" || error.message.includes("read-only")) {
+        throw new Error("EROFS: File system is read-only. Please update files via git and redeploy.");
+      }
+      throw error;
+    }
   }
 }
 
@@ -76,7 +107,18 @@ export function getPortfolioData(): { projects: any[] } {
 }
 
 export function savePortfolioData(data: { projects: any[] }): void {
-  fs.writeFileSync(PORTFOLIO_FILE, JSON.stringify(data, null, 2), "utf-8");
+  if (process.env.VERCEL === "1") {
+    throw new Error("EROFS: File system is read-only in Vercel production. Please update files via git and redeploy.");
+  }
+
+  try {
+    fs.writeFileSync(PORTFOLIO_FILE, JSON.stringify(data, null, 2), "utf-8");
+  } catch (error: any) {
+    if (error.code === "EROFS" || error.message.includes("read-only")) {
+      throw new Error("EROFS: File system is read-only. Please update files via git and redeploy.");
+    }
+    throw error;
+  }
 }
 
 export function getPortfolioItem(slug: string): any | null {

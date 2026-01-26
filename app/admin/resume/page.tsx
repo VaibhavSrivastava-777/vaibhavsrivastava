@@ -71,7 +71,17 @@ export default function ResumeEditPage() {
       if (response.ok) {
         alert("Resume updated successfully!");
       } else {
-        alert(data.error || "Failed to update resume");
+        if (data.readOnly) {
+          alert("⚠️ Production Limitation:\n\n" + 
+            "File system is read-only in production (Vercel).\n\n" +
+            "Options:\n" +
+            "1. Test changes locally using 'npm run dev'\n" +
+            "2. Update files manually via git and push to deploy\n" +
+            "3. Contact admin to implement database storage\n\n" +
+            "Error: " + data.error);
+        } else {
+          alert(data.error || "Failed to update resume");
+        }
       }
     } catch (error) {
       console.error("Error updating resume:", error);
