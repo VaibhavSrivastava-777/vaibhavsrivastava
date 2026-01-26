@@ -58,8 +58,18 @@ export async function getBlogPostBySlug(slug: string): Promise<BlogPost | null> 
     const fileContent = fs.readFileSync(filePath, "utf-8");
     const { data, content } = matter(fileContent);
     
-    const processedContent = await remark().use(html).process(content);
-    const contentHtml = processedContent.toString();
+    // Check if content is already HTML (from rich text editor) or markdown
+    const isHtml = content.trim().startsWith("<");
+    let contentHtml: string;
+    
+    if (isHtml) {
+      // Content is already HTML from rich text editor
+      contentHtml = content;
+    } else {
+      // Process markdown to HTML
+      const processedContent = await remark().use(html).process(content);
+      contentHtml = processedContent.toString();
+    }
     
     return {
       slug,

@@ -69,10 +69,11 @@ export interface PortfolioItemData {
   techStack: string[];
   githubUrl?: string | null;
   star: {
-    situation: string;
-    task: string;
-    action: string;
-    result: string;
+    situation?: string;
+    task?: string;
+    action?: string;
+    result?: string;
+    content?: string;
   };
   slug?: string;
 }
@@ -100,20 +101,13 @@ export function validatePortfolioItem(data: PortfolioItemData): { valid: boolean
     errors.push("At least one tech stack item is required");
   }
 
-  if (!data.star.situation || data.star.situation.trim().length === 0) {
-    errors.push("STAR Situation is required");
-  }
-
-  if (!data.star.task || data.star.task.trim().length === 0) {
-    errors.push("STAR Task is required");
-  }
-
-  if (!data.star.action || data.star.action.trim().length === 0) {
-    errors.push("STAR Action is required");
-  }
-
-  if (!data.star.result || data.star.result.trim().length === 0) {
-    errors.push("STAR Result is required");
+  // Check for STAR content - either in new format (content) or old format (separate fields)
+  const starContent = (data.star as any)?.content || "";
+  const hasStarContent = starContent.trim().length > 0;
+  const hasOldFormat = data.star.situation || data.star.task || data.star.action || data.star.result;
+  
+  if (!hasStarContent && !hasOldFormat) {
+    errors.push("STAR case study content is required");
   }
 
   if (data.slug && !validateSlug(data.slug)) {

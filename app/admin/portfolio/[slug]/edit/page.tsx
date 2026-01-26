@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
 import FormField from "@/components/admin/FormField";
+import RichTextEditor from "@/components/admin/RichTextEditor";
 
 export default function EditPortfolioItem() {
   const router = useRouter();
@@ -17,12 +18,7 @@ export default function EditPortfolioItem() {
     description: "",
     techStack: "",
     githubUrl: "",
-    star: {
-      situation: "",
-      task: "",
-      action: "",
-      result: "",
-    },
+    starContent: "",
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isLoading, setIsLoading] = useState(true);
@@ -37,6 +33,12 @@ export default function EditPortfolioItem() {
       const response = await fetch(`/api/admin/portfolio?slug=${slug}`);
       if (response.ok) {
         const data = await response.json();
+        // Handle both old format (separate fields) and new format (starContent)
+        const starContent = data.star?.content || 
+          (data.star?.situation || data.star?.task || data.star?.action || data.star?.result
+            ? `<h3>Situation</h3><p>${data.star.situation || ""}</p><h3>Task</h3><p>${data.star.task || ""}</p><h3>Action</h3><p>${data.star.action || ""}</p><h3>Result</h3><p>${data.star.result || ""}</p>`
+            : "");
+        
         setFormData({
           name: data.name || "",
           impact: data.impact || "",
@@ -45,12 +47,7 @@ export default function EditPortfolioItem() {
           description: data.description || "",
           techStack: Array.isArray(data.techStack) ? data.techStack.join(", ") : data.techStack || "",
           githubUrl: data.githubUrl || "",
-          star: {
-            situation: data.star?.situation || "",
-            task: data.star?.task || "",
-            action: data.star?.action || "",
-            result: data.star?.result || "",
-          },
+          starContent: starContent,
         });
       } else {
         alert("Failed to load project");
@@ -83,6 +80,13 @@ export default function EditPortfolioItem() {
           slug,
           techStack: techStackArray,
           githubUrl: formData.githubUrl || null,
+          star: {
+            situation: "",
+            task: "",
+            action: "",
+            result: "",
+            content: formData.starContent,
+          },
         }),
       });
 
@@ -99,10 +103,7 @@ export default function EditPortfolioItem() {
             if (err.includes("date")) errorMap.date = err;
             if (err.includes("Description")) errorMap.description = err;
             if (err.includes("tech stack")) errorMap.techStack = err;
-            if (err.includes("Situation")) errorMap.starSituation = err;
-            if (err.includes("Task")) errorMap.starTask = err;
-            if (err.includes("Action")) errorMap.starAction = err;
-            if (err.includes("Result")) errorMap.starResult = err;
+            if (err.includes("STAR") || err.includes("star")) errorMap.starContent = err;
           });
           setErrors(errorMap);
         } else {
@@ -204,49 +205,17 @@ export default function EditPortfolioItem() {
         />
 
         <div className="border-t border-gray-200 pt-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">STAR Format</h3>
-          <div className="space-y-4">
-            <FormField
-              label="Situation"
-              name="starSituation"
-              type="textarea"
-              value={formData.star.situation}
-              onChange={(value) => setFormData({ ...formData, star: { ...formData.star, situation: value } })}
-              required
-              error={errors.starSituation}
-              rows={3}
-            />
-            <FormField
-              label="Task"
-              name="starTask"
-              type="textarea"
-              value={formData.star.task}
-              onChange={(value) => setFormData({ ...formData, star: { ...formData.star, task: value } })}
-              required
-              error={errors.starTask}
-              rows={3}
-            />
-            <FormField
-              label="Action"
-              name="starAction"
-              type="textarea"
-              value={formData.star.action}
-              onChange={(value) => setFormData({ ...formData, star: { ...formData.star, action: value } })}
-              required
-              error={errors.starAction}
-              rows={3}
-            />
-            <FormField
-              label="Result"
-              name="starResult"
-              type="textarea"
-              value={formData.star.result}
-              onChange={(value) => setFormData({ ...formData, star: { ...formData.star, result: value } })}
-              required
-              error={errors.starResult}
-              rows={3}
-            />
-          </div>
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">Case Study (STAR Format)</h3>
+          <p className="text-sm text-gray-600 mb-4">
+            Write your case study in STAR format. You can structure it with headings for Situation, Task, Action, and Result.
+          </p>
+          {errors.starContent && <p className="text-sm text-red-600 mb-2">{errors.starContent}</p>}
+          <RichTextEditor
+            value={formData.starContent}
+            onChange={(value) => setFormData({ ...formData, starContent: value })}
+            label="STAR Case Study"
+            placeholder="Write your case study here. Use headings to organize Situation, Task, Action, and Result sections..."
+          />
         </div>
 
         <div className="flex gap-4 pt-4">

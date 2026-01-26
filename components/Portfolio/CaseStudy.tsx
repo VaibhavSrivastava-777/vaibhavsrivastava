@@ -2,10 +2,11 @@ import { Github, ExternalLink } from "lucide-react";
 import { formatDate } from "@/lib/client-utils";
 
 interface StarFormat {
-  situation: string;
-  task: string;
-  action: string;
-  result: string;
+  situation?: string;
+  task?: string;
+  action?: string;
+  result?: string;
+  content?: string;
 }
 
 interface CaseStudyProps {
@@ -71,27 +72,44 @@ export default function CaseStudy({
         <section>
           <h2 className="text-2xl font-semibold mb-4 text-gray-900">Case Study (STAR Format)</h2>
           
-          <div className="space-y-6">
-            <div className="card">
-              <h3 className="text-lg font-semibold mb-2 text-gray-900">Situation</h3>
-              <p className="text-gray-700">{star.situation}</p>
+          {star.content ? (
+            // New format: Rich text HTML content
+            <div 
+              className="prose prose-lg max-w-none"
+              dangerouslySetInnerHTML={{ __html: star.content }}
+            />
+          ) : (
+            // Old format: Separate fields (backward compatibility)
+            <div className="space-y-6">
+              {star.situation && (
+                <div className="card">
+                  <h3 className="text-lg font-semibold mb-2 text-gray-900">Situation</h3>
+                  <p className="text-gray-700">{star.situation}</p>
+                </div>
+              )}
+              
+              {star.task && (
+                <div className="card">
+                  <h3 className="text-lg font-semibold mb-2 text-gray-900">Task</h3>
+                  <p className="text-gray-700">{star.task}</p>
+                </div>
+              )}
+              
+              {star.action && (
+                <div className="card">
+                  <h3 className="text-lg font-semibold mb-2 text-gray-900">Action</h3>
+                  <p className="text-gray-700">{star.action}</p>
+                </div>
+              )}
+              
+              {star.result && (
+                <div className="card bg-primary/5 border-primary/20">
+                  <h3 className="text-lg font-semibold mb-2 text-gray-900">Result</h3>
+                  <p className="text-gray-700 font-medium">{star.result}</p>
+                </div>
+              )}
             </div>
-            
-            <div className="card">
-              <h3 className="text-lg font-semibold mb-2 text-gray-900">Task</h3>
-              <p className="text-gray-700">{star.task}</p>
-            </div>
-            
-            <div className="card">
-              <h3 className="text-lg font-semibold mb-2 text-gray-900">Action</h3>
-              <p className="text-gray-700">{star.action}</p>
-            </div>
-            
-            <div className="card bg-primary/5 border-primary/20">
-              <h3 className="text-lg font-semibold mb-2 text-gray-900">Result</h3>
-              <p className="text-gray-700 font-medium">{star.result}</p>
-            </div>
-          </div>
+          )}
         </section>
       </div>
     </article>

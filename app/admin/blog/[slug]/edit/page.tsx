@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
 import FormField from "@/components/admin/FormField";
-import MarkdownEditor from "@/components/admin/MarkdownEditor";
+import RichTextEditor from "@/components/admin/RichTextEditor";
 
 export default function EditBlogPost() {
   const router = useRouter();
@@ -147,9 +147,11 @@ export default function EditBlogPost() {
 
         <div>
           {errors.content && <p className="text-sm text-red-600 mb-2">{errors.content}</p>}
-          <MarkdownEditor
+          <RichTextEditor
             value={formData.content}
             onChange={(value) => setFormData({ ...formData, content: value })}
+            label="Content"
+            placeholder="Write your blog post content here..."
           />
         </div>
 

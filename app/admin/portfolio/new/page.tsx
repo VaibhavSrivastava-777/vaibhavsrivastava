@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import FormField from "@/components/admin/FormField";
+import RichTextEditor from "@/components/admin/RichTextEditor";
 
 export default function NewPortfolioItem() {
   const router = useRouter();
@@ -14,12 +15,7 @@ export default function NewPortfolioItem() {
     description: "",
     techStack: "",
     githubUrl: "",
-    star: {
-      situation: "",
-      task: "",
-      action: "",
-      result: "",
-    },
+    starContent: "",
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -42,6 +38,13 @@ export default function NewPortfolioItem() {
           ...formData,
           techStack: techStackArray,
           githubUrl: formData.githubUrl || null,
+          star: {
+            situation: "",
+            task: "",
+            action: "",
+            result: "",
+            content: formData.starContent,
+          },
         }),
       });
 
@@ -59,10 +62,7 @@ export default function NewPortfolioItem() {
             if (err.includes("date")) errorMap.date = err;
             if (err.includes("Description")) errorMap.description = err;
             if (err.includes("tech stack")) errorMap.techStack = err;
-            if (err.includes("Situation")) errorMap.starSituation = err;
-            if (err.includes("Task")) errorMap.starTask = err;
-            if (err.includes("Action")) errorMap.starAction = err;
-            if (err.includes("Result")) errorMap.starResult = err;
+            if (err.includes("STAR") || err.includes("star")) errorMap.starContent = err;
           });
           setErrors(errorMap);
         } else {
@@ -160,49 +160,17 @@ export default function NewPortfolioItem() {
         />
 
         <div className="border-t border-gray-200 pt-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">STAR Format</h3>
-          <div className="space-y-4">
-            <FormField
-              label="Situation"
-              name="starSituation"
-              type="textarea"
-              value={formData.star.situation}
-              onChange={(value) => setFormData({ ...formData, star: { ...formData.star, situation: value } })}
-              required
-              error={errors.starSituation}
-              rows={3}
-            />
-            <FormField
-              label="Task"
-              name="starTask"
-              type="textarea"
-              value={formData.star.task}
-              onChange={(value) => setFormData({ ...formData, star: { ...formData.star, task: value } })}
-              required
-              error={errors.starTask}
-              rows={3}
-            />
-            <FormField
-              label="Action"
-              name="starAction"
-              type="textarea"
-              value={formData.star.action}
-              onChange={(value) => setFormData({ ...formData, star: { ...formData.star, action: value } })}
-              required
-              error={errors.starAction}
-              rows={3}
-            />
-            <FormField
-              label="Result"
-              name="starResult"
-              type="textarea"
-              value={formData.star.result}
-              onChange={(value) => setFormData({ ...formData, star: { ...formData.star, result: value } })}
-              required
-              error={errors.starResult}
-              rows={3}
-            />
-          </div>
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">Case Study (STAR Format)</h3>
+          <p className="text-sm text-gray-600 mb-4">
+            Write your case study in STAR format. You can structure it with headings for Situation, Task, Action, and Result.
+          </p>
+          {errors.starContent && <p className="text-sm text-red-600 mb-2">{errors.starContent}</p>}
+          <RichTextEditor
+            value={formData.starContent}
+            onChange={(value) => setFormData({ ...formData, starContent: value })}
+            label="STAR Case Study"
+            placeholder="Write your case study here. Use headings to organize Situation, Task, Action, and Result sections..."
+          />
         </div>
 
         <div className="flex gap-4 pt-4">

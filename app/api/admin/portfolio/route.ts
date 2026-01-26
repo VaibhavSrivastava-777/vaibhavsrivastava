@@ -43,6 +43,8 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const slug = body.slug || generateSlug(body.name);
 
+    // Handle both new format (star.content) and old format (separate fields)
+    const starContent = body.star?.content || "";
     const item = {
       slug,
       name: body.name,
@@ -52,12 +54,15 @@ export async function POST(request: NextRequest) {
       category: body.category,
       date: body.date,
       description: body.description,
-      star: {
-        situation: body.star.situation,
-        task: body.star.task,
-        action: body.star.action,
-        result: body.star.result,
-      },
+      star: starContent 
+        ? { content: starContent, situation: "", task: "", action: "", result: "" }
+        : {
+            situation: body.star?.situation || "",
+            task: body.star?.task || "",
+            action: body.star?.action || "",
+            result: body.star?.result || "",
+            content: "",
+          },
     };
 
     const validation = validatePortfolioItem(item);
