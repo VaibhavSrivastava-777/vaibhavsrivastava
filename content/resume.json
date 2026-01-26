@@ -1,0 +1,56 @@
+{
+  "executiveSummary": "Strategic product leader with extensive experience in driving innovation through AI/ML, market research, and data-driven decision making. Proven track record of building scalable products, leading cross-functional teams, and executing successful go-to-market strategies. Passionate about leveraging technology to solve complex business challenges and create meaningful impact.",
+  "experience": [
+    {
+      "company": "Your Current Company",
+      "role": "Senior Product Manager / Strategic Leader",
+      "startDate": "2020-01",
+      "endDate": "present",
+      "location": "City, Country",
+      "achievements": [
+        "Led product strategy for AI/ML initiatives resulting in 40% improvement in key metrics",
+        "Managed cross-functional teams of 15+ members across engineering, design, and data science",
+        "Executed GTM strategy that increased market penetration by 60%",
+        "Conducted comprehensive market research identifying $50M+ opportunity"
+      ],
+      "description": "Strategic leadership role focusing on product innovation, AI/ML integration, and market expansion."
+    }
+  ],
+  "skills": {
+    "marketResearch": [
+      "Market Analysis",
+      "Competitive Intelligence",
+      "User Research",
+      "Data Analytics",
+      "Customer Insights"
+    ],
+    "productStrategy": [
+      "Product Roadmapping",
+      "Strategic Planning",
+      "Product-Market Fit",
+      "Feature Prioritization",
+      "Stakeholder Management"
+    ],
+    "aiMl": [
+      "Machine Learning",
+      "AI Strategy",
+      "Data Science",
+      "Predictive Analytics",
+      "MLOps"
+    ],
+    "solutionArchitecture": [
+      "System Design",
+      "Cloud Architecture",
+      "API Design",
+      "Scalability Planning",
+      "Technical Strategy"
+    ],
+    "gtmExecution": [
+      "Go-to-Market Strategy",
+      "Product Launch",
+      "Partnership Development",
+      "Sales Enablement",
+      "Marketing Strategy"
+    ]
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "engagements": [
+    {
+      "event": "Tech Innovation Summit 2024",
+      "date": "2024-03-15",
+      "location": "San Francisco, CA",
+      "topic": "AI/ML in Product Strategy: From Concept to Execution",
+      "type": "Conference",
+      "videoUrl": null,
+      "slidesUrl": null,
+      "description": "Presented on integrating AI/ML into product strategy and shared real-world case studies."
+    },
+    {
+      "event": "Product Leaders Forum",
+      "date": "2024-01-20",
+      "location": "Virtual",
+      "topic": "Building Data-Driven Product Teams",
+      "type": "Webinar",
+      "videoUrl": null,
+      "slidesUrl": null,
+      "description": "Discussed strategies for building and leading data-driven product teams."
+    }
+  ],
+  "mentoring": {
+    "areas": [
+      "Product Strategy & Roadmapping",
+      "AI/ML Product Development",
+      "Career Growth in Product Management",
+      "Go-to-Market Execution",
+      "Technical Product Leadership"
+    ],
+    "testimonials": [
+      {
+        "name": "John Doe",
+        "role": "Product Manager",
+        "company": "Tech Corp",
+        "text": "Vaibhav's mentorship was instrumental in helping me transition to a strategic product role. His insights on AI/ML integration were particularly valuable.",
+        "photo": null
+      },
+      {
+        "name": "Jane Smith",
+        "role": "Senior PM",
+        "company": "Startup Inc",
+        "text": "Excellent guidance on product strategy and GTM execution. Highly recommend for anyone looking to level up their product leadership skills.",
+        "photo": null
+      }
+    ]
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "projects": [
+    {
+      "slug": "ai-powered-analytics-platform",
+      "name": "AI-Powered Analytics Platform",
+      "impact": "Increased user engagement by 45% and reduced processing time by 60%",
+      "techStack": ["Python", "TensorFlow", "React", "AWS", "PostgreSQL"],
+      "githubUrl": "https://github.com/yourusername/project-name",
+      "category": "AI/ML",
+      "date": "2023-06",
+      "description": "Built a comprehensive analytics platform leveraging machine learning for predictive insights.",
+      "star": {
+        "situation": "Company needed better insights from large volumes of data to make strategic decisions",
+        "task": "Design and build an AI-powered analytics platform that could process millions of data points and provide actionable insights",
+        "action": "Led a cross-functional team to develop ML models, built scalable architecture on AWS, and created intuitive UI for data visualization",
+        "result": "Platform processed 10M+ data points daily, increased user engagement by 45%, and reduced decision-making time by 60%"
+      }
+    },
+    {
+      "slug": "product-strategy-framework",
+      "name": "Product Strategy Framework",
+      "impact": "Adopted by 5+ product teams, improved time-to-market by 30%",
+      "techStack": ["Strategy", "Figma", "Documentation"],
+      "githubUrl": null,
+      "category": "Product Strategy",
+      "date": "2023-03",
+      "description": "Developed a comprehensive framework for product strategy and execution.",
+      "star": {
+        "situation": "Product teams lacked a structured approach to strategy and execution",
+        "task": "Create a reusable framework that guides teams through product strategy, planning, and execution",
+        "action": "Researched best practices, interviewed 20+ product leaders, and developed a comprehensive framework with templates and guidelines",
+        "result": "Framework adopted by 5+ product teams, reduced planning time by 40%, and improved time-to-market by 30%"
+      }
+    }
+  ]
+}
