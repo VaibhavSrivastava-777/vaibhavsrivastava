@@ -20,7 +20,7 @@ export default function Footer() {
               <Linkedin size={20} />
             </a>
             <a
-              href="mailto:contact@vaibhavsrivastava.com"
+              href="mailto:vaibhav.srivastava@iiml.org"
               className="text-gray-600 hover:text-primary transition-colors"
               aria-label="Email"
             >

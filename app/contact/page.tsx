@@ -51,7 +51,7 @@ export default function ContactPage() {
             <h2 className="text-2xl font-semibold mb-6 text-gray-900">Contact Information</h2>
             <div className="space-y-6">
               <a
-                href="mailto:contact@vaibhavsrivastava.com"
+                href="mailto:vaibhav.srivastava@iiml.org"
                 className="flex items-center gap-3 text-gray-700 hover:text-primary transition-colors"
               >
                 <div className="p-2 bg-gray-100 rounded-lg">
@@ -59,7 +59,7 @@ export default function ContactPage() {
                 </div>
                 <div>
                   <p className="text-sm text-gray-500">Email</p>
-                  <p className="font-medium">contact@vaibhavsrivastava.com</p>
+                  <p className="font-medium">vaibhav.srivastava@iiml.org</p>
                 </div>
               </a>
 
