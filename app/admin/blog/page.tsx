@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { Plus, Edit, Trash2, Eye } from "lucide-react";
+import { Plus, Edit, Trash2, Eye, AlertCircle, CheckCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 interface BlogPost {
@@ -17,11 +17,29 @@ export default function BlogListPage() {
   const [posts, setPosts] = useState<BlogPost[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [deletingSlug, setDeletingSlug] = useState<string | null>(null);
+  const [githubStatus, setGithubStatus] = useState<{
+    configured: boolean;
+    error?: string;
+    message?: string;
+  } | null>(null);
   const router = useRouter();
 
   useEffect(() => {
     fetchPosts();
+    fetchGithubStatus();
   }, []);
+
+  const fetchGithubStatus = async () => {
+    try {
+      const response = await fetch("/api/admin/github-status");
+      if (response.ok) {
+        const data = await response.json();
+        setGithubStatus(data);
+      }
+    } catch {
+      setGithubStatus({ configured: false, error: "Failed to check status" });
+    }
+  };
 
   const fetchPosts = async () => {
     try {
@@ -53,13 +71,11 @@ export default function BlogListPage() {
       } else {
         const data = await response.json();
         if (data.readOnly) {
-          alert("⚠️ Production Limitation:\n\n" + 
-            "File system is read-only in production (Vercel).\n\n" +
-            "Options:\n" +
-            "1. Test changes locally using 'npm run dev'\n" +
-            "2. Update files manually via git and push to deploy\n" +
-            "3. Contact admin to implement database storage\n\n" +
-            "Error: " + data.error);
+          alert(
+            "⚠️ GitHub API not configured or failed.\n\n" +
+              data.error +
+              (data.setupGuide ? "\n\nSetup guide: " + data.setupGuide : "")
+          );
         } else {
           alert(data.error || "Failed to delete post");
         }
@@ -78,6 +94,41 @@ export default function BlogListPage() {
 
   return (
     <div>
+      {githubStatus && (
+        <div
+          className={`mb-6 p-4 rounded-lg flex items-start gap-3 ${
+            githubStatus.configured
+              ? "bg-green-50 border border-green-200 text-green-800"
+              : "bg-amber-50 border border-amber-200 text-amber-800"
+          }`}
+        >
+          {githubStatus.configured ? (
+            <CheckCircle size={20} className="flex-shrink-0 mt-0.5" />
+          ) : (
+            <AlertCircle size={20} className="flex-shrink-0 mt-0.5" />
+          )}
+          <div>
+            {githubStatus.configured ? (
+              <p className="font-medium">{githubStatus.message}</p>
+            ) : (
+              <>
+                <p className="font-medium">
+                  GitHub API: Not configured — blog saves will fail in production.
+                </p>
+                <p className="text-sm mt-1 opacity-90">{githubStatus.error}</p>
+                <a
+                  href="https://github.com/VaibhavSrivastava-777/vaibhavsrivastava/blob/main/GITHUB_API_SETUP.md"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-sm font-medium underline mt-2 inline-block"
+                >
+                  View setup guide
+                </a>
+              </>
+            )}
+          </div>
+        </div>
+      )}
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-3xl font-bold text-gray-900">Blog Posts</h1>
         <Link href="/admin/blog/new" className="btn-primary inline-flex items-center gap-2">

@@ -67,13 +67,11 @@ export default function EditBlogPost() {
         router.push("/admin/blog");
       } else {
         if (data.readOnly) {
-          alert("⚠️ Production Limitation:\n\n" + 
-            "File system is read-only in production (Vercel).\n\n" +
-            "Options:\n" +
-            "1. Test changes locally using 'npm run dev'\n" +
-            "2. Update files manually via git and push to deploy\n" +
-            "3. Contact admin to implement database storage\n\n" +
-            "Error: " + data.error);
+          alert(
+            "⚠️ GitHub API not configured or failed.\n\n" +
+              data.error +
+              (data.setupGuide ? "\n\nSetup guide: " + data.setupGuide : "")
+          );
         } else if (data.errors) {
           const errorMap: Record<string, string> = {};
           data.errors.forEach((err: string) => {

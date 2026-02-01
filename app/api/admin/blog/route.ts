@@ -56,14 +56,6 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    // Check if we're in a read-only environment (Vercel production)
-    if (process.env.VERCEL === "1" || process.env.NODE_ENV === "production") {
-      return NextResponse.json({ 
-        error: "File system is read-only in production. Please update files via git and redeploy, or use the development server for testing.",
-        readOnly: true
-      }, { status: 503 });
-    }
-
     const body = await request.json();
     const slug = body.slug || generateSlug(body.title);
 
@@ -83,16 +75,17 @@ export async function POST(request: NextRequest) {
       await saveBlogPost(slug, frontmatter, body.content);
       return NextResponse.json({ success: true, slug });
     } catch (error: any) {
-      if (error.message.includes("GitHub API not configured")) {
-        return NextResponse.json({ 
-          error: "GitHub API not configured. Please set GITHUB_OWNER, GITHUB_REPO, and GITHUB_TOKEN environment variables.",
-          readOnly: true
-        }, { status: 503 });
-      }
-      if (error.message.includes("EROFS") || error.message.includes("read-only")) {
-        return NextResponse.json({ 
-          error: "File system is read-only. This feature works in development mode. For production, please configure GitHub API.",
-          readOnly: true
+      const isReadOnly =
+        error.message.includes("GitHub API not configured") ||
+        error.message.includes("EROFS") ||
+        error.message.includes("read-only");
+      if (isReadOnly) {
+        return NextResponse.json({
+          error:
+            "GitHub API not configured or failed. Set GITHUB_OWNER, GITHUB_REPO, and GITHUB_TOKEN in Vercel. See GITHUB_API_SETUP.md for setup instructions.",
+          readOnly: true,
+          setupGuide:
+            "https://github.com/VaibhavSrivastava-777/vaibhavsrivastava/blob/main/GITHUB_API_SETUP.md",
         }, { status: 503 });
       }
       throw error;
@@ -108,14 +101,6 @@ export async function PUT(request: NextRequest) {
     const isAuthenticated = await checkAuth();
     if (!isAuthenticated) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
-    // Check if we're in a read-only environment (Vercel production)
-    if (process.env.VERCEL === "1" || process.env.NODE_ENV === "production") {
-      return NextResponse.json({ 
-        error: "File system is read-only in production. Please update files via git and redeploy, or use the development server for testing.",
-        readOnly: true
-      }, { status: 503 });
     }
 
     const body = await request.json();
@@ -141,16 +126,17 @@ export async function PUT(request: NextRequest) {
       await saveBlogPost(slug, frontmatter, body.content);
       return NextResponse.json({ success: true, slug });
     } catch (error: any) {
-      if (error.message.includes("GitHub API not configured")) {
-        return NextResponse.json({ 
-          error: "GitHub API not configured. Please set GITHUB_OWNER, GITHUB_REPO, and GITHUB_TOKEN environment variables.",
-          readOnly: true
-        }, { status: 503 });
-      }
-      if (error.message.includes("EROFS") || error.message.includes("read-only")) {
-        return NextResponse.json({ 
-          error: "File system is read-only. This feature works in development mode. For production, please configure GitHub API.",
-          readOnly: true
+      const isReadOnly =
+        error.message.includes("GitHub API not configured") ||
+        error.message.includes("EROFS") ||
+        error.message.includes("read-only");
+      if (isReadOnly) {
+        return NextResponse.json({
+          error:
+            "GitHub API not configured or failed. Set GITHUB_OWNER, GITHUB_REPO, and GITHUB_TOKEN in Vercel. See GITHUB_API_SETUP.md for setup instructions.",
+          readOnly: true,
+          setupGuide:
+            "https://github.com/VaibhavSrivastava-777/vaibhavsrivastava/blob/main/GITHUB_API_SETUP.md",
         }, { status: 503 });
       }
       throw error;
@@ -179,16 +165,17 @@ export async function DELETE(request: NextRequest) {
       await deleteBlogPost(slug);
       return NextResponse.json({ success: true });
     } catch (error: any) {
-      if (error.message.includes("GitHub API not configured")) {
-        return NextResponse.json({ 
-          error: "GitHub API not configured. Please set GITHUB_OWNER, GITHUB_REPO, and GITHUB_TOKEN environment variables.",
-          readOnly: true
-        }, { status: 503 });
-      }
-      if (error.message.includes("EROFS") || error.message.includes("read-only")) {
-        return NextResponse.json({ 
-          error: "File system is read-only. This feature works in development mode. For production, please configure GitHub API.",
-          readOnly: true
+      const isReadOnly =
+        error.message.includes("GitHub API not configured") ||
+        error.message.includes("EROFS") ||
+        error.message.includes("read-only");
+      if (isReadOnly) {
+        return NextResponse.json({
+          error:
+            "GitHub API not configured or failed. Set GITHUB_OWNER, GITHUB_REPO, and GITHUB_TOKEN in Vercel. See GITHUB_API_SETUP.md for setup instructions.",
+          readOnly: true,
+          setupGuide:
+            "https://github.com/VaibhavSrivastava-777/vaibhavsrivastava/blob/main/GITHUB_API_SETUP.md",
         }, { status: 503 });
       }
       throw error;
