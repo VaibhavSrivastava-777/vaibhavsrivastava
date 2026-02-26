@@ -7,12 +7,12 @@ import Footer from "@/components/Footer";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Vaibhav Srivastava | Strategic Thought Leader",
+  title: "Vaibhav Srivastava | AI Product Management",
   description: "Strategic thought leader specializing in Product Strategy, AI/ML Innovation, and Growth Leadership",
   keywords: ["Product Strategy", "AI/ML", "Solution Architecture", "GTM", "Strategic Leadership"],
   authors: [{ name: "Vaibhav Srivastava" }],
   openGraph: {
-    title: "Vaibhav Srivastava | Strategic Thought Leader",
+    title: "Vaibhav Srivastava | AI Product Management",
     description: "Strategic thought leader specializing in Product Strategy, AI/ML Innovation, and Growth Leadership",
     type: "website",
     url: "https://vaibhavsrivastava.com",
@@ -20,7 +20,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Vaibhav Srivastava | Strategic Thought Leader",
+    title: "Vaibhav Srivastava | AI Product Management",
     description: "Strategic thought leader specializing in Product Strategy, AI/ML Innovation, and Growth Leadership",
   },
   metadataBase: new URL("https://vaibhavsrivastava.com"),
@@ -48,7 +48,7 @@ export default function RootLayout({
               sameAs: [
                 "https://www.linkedin.com/in/vaibhavsrivastava777/",
               ],
-              jobTitle: "Strategic Thought Leader",
+              jobTitle: "AI Product Management",
               description: "Strategic thought leader specializing in Product Strategy, AI/ML Innovation, and Growth Leadership",
             }),
           }}

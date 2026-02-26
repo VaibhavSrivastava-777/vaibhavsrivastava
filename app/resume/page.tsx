@@ -9,7 +9,7 @@ import DownloadResume from "@/components/CTAs/DownloadResume";
 
 export const metadata: Metadata = {
   title: "Resume | Vaibhav Srivastava",
-  description: "Executive summary, experience, and skills of Vaibhav Srivastava - Strategic Thought Leader",
+  description: "Executive summary, experience, and skills of Vaibhav Srivastava - AI Product Management",
 };
 
 function getResumeData() {
