@@ -25,6 +25,34 @@
         "action": "",
         "result": ""
       }
+    },
+    {
+      "slug": "localeats",
+      "name": "LocalEats",
+      "impact": "Empowers home chefs to earn a livelihood while making healthy, homemade food accessible to society residents.",
+      "techStack": [
+        "Kotlin",
+        "Jetpack Compose",
+        "Material 3",
+        "Supabase (PostgreSQL + REST + Edge Functions)",
+        "Firebase Cloud Messaging",
+        "Google Sign-In",
+        "Ktor HTTP Client",
+        "Kotlinx Serialization",
+        "Coil",
+        "R8/ProGuard"
+      ],
+      "githubUrl": "https://github.com/VaibhavSrivastava-777/localeats",
+      "category": "Product Strategy",
+      "date": "2026-02-27",
+      "description": "LocalEats is a hyperlocal Android marketplace that connects home chefs in residential societies with nearby buyers. Sellers list homemade meals, buyers browse and order, and real-time notifications keep everyone updated on order status and payments. A built-in utility directory, society-level broadcasts, and role-based dashboards round out a complete community food platform -- reducing dependence on outside delivery apps and promoting healthier eating habits.",
+      "star": {
+        "content": "<p>Residents&nbsp;in large housing&nbsp;societies regularly&nbsp;depend&nbsp;on outside food&nbsp;delivery apps, resulting&nbsp;in unhealthy eating, high&nbsp;costs, and zero&nbsp;support&nbsp;for talented&nbsp;home chefs within&nbsp;the same&nbsp;community who&nbsp;lack&nbsp;a&nbsp;platform to reach&nbsp;nearby&nbsp;customers.</p><p>The application aims to build&nbsp;a mobile-first marketplace&nbsp;that&nbsp;removes&nbsp;friction&nbsp;between&nbsp;home chefs and society&nbsp;residents -- enabling&nbsp;chefs to list&nbsp;meals, accept&nbsp;orders, and manage&nbsp;payments, while giving&nbsp;buyers&nbsp;a&nbsp;trusted, hyperlocal alternative&nbsp;to commercial&nbsp;food delivery.</p><p>As a solution, designed&nbsp;and&nbsp;developed&nbsp;LocalEats, a native&nbsp;Android app&nbsp;with&nbsp;role-based dashboards&nbsp;(Buyer, Seller, Delivery, Admin), society-scoped food&nbsp;listings, real-time FCM push notifications for&nbsp;order and&nbsp;payment updates, a&nbsp;utility services&nbsp;directory for&nbsp;local&nbsp;tradespeople, and society-wide&nbsp;broadcast&nbsp;notifications. Used&nbsp;Supabase as&nbsp;the backend&nbsp;(PostgreSQL, Edge&nbsp;Functions, database webhooks) and Jetpack Compose for a&nbsp;modern, responsive UI. Implemented Google Sign-In, restaurant&nbsp;validity&nbsp;management, food&nbsp;item reviews, and edge-to-edge Android&nbsp;15 compliance.</p><p>Home&nbsp;chefs can now monetize their cooking&nbsp;skills with minimal&nbsp;setup; society residents discover&nbsp;affordable, healthy meals just&nbsp;a building&nbsp;away. The platform fosters community trust&nbsp;through ratings&nbsp;and reviews, cuts&nbsp;delivery&nbsp;distances&nbsp;to&nbsp;near-zero, and provides a&nbsp;scalable model&nbsp;replicable across&nbsp;any&nbsp;residential&nbsp;complex.</p>",
+        "situation": "",
+        "task": "",
+        "action": "",
+        "result": ""
+      }
     }
   ]
 }
